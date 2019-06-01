@@ -1,0 +1,59 @@
+---
+title: "ST 558 Project 1 XML"
+author: "Ariel Macari, Xiyou Zhou"
+output:
+  html_document:
+    cold_folding: hide
+    toc: yes
+    toc_float: FALSE
+    toc_depth: 3
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning=FALSE, message = FALSE)
+library(tidyverse)
+library (XML)
+
+
+```
+
+# What is XML Data?
+
+eXtensible Markup Language (XML) is a type of file used to store data.  The stored data includes annotations to format the data but remins invisible to the user end. XML Data can be opened in a web browswer or any text editor.  It is good use to store data for examples like a medical record.
+
+
+[XML Data Example](https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.ib6p000/ib6p9c4m2.htm)
+
+# Explanation on Packages
+Create in list form
+
+* Tidyverse - The tidyverse is a system of packages that helps in read, clean, and present data.  The tidyverse includes the following packages     
+    + ggplot2 - system for creating graphics  
+    + ddplyr - data manipulation  
+    + tidyr - functions to tidy data
+    + readr- read in files  
+    + purr - tools to work with functions and vectors
+    + tibble - a data frame with better options
+    + stringr - helps working with strings
+    + forcasts - tools to help with factors in R
+
+# Dataset
+Describe the data 
+Where was it found (link)
+Describe how it was read in
+
+# Data
+Show the data (use datatable)
+Create a new variable
+
+# Tables 
+show tables here
+
+# Plots
+at least 1 side by side bar
+1 side by side box
+scatter with coloring
+
+https://catalog.data.gov/dataset/nchs-potentially-excess-deaths-from-the-five-leading-causes-of-death
+
