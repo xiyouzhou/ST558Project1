@@ -64,13 +64,22 @@ HealthData <- xmlToDataFrame(nodes = getNodeSet(xmldoc, "//row//row"))
 
 
 # Tables 
-The function (include name here) calculates the % of overall deaths by the top 10 causes {need to creat this!}
 
+
+* The following shows the National number of deaths and aadr per years  
 ```{r datatable}
 knitr::kable(HealthData %>% filter(state =="United States" & cause_name=="All causes") %>% select(year, deaths, aadr) %>% arrange(year))
-
-
 ```
+
+* A contingency table showing that the dataset includes 18 years of the top 10 causes of death by state is shown below  
+
+```{r datatable1}
+table(HealthData$state, HealthData$cause_name)
+```
+
+* The function (include name here) calculates the % of overall deaths by the top 10 causes {need to create this!}
+
+
 
 
 # Plots
