@@ -1,0 +1,28 @@
+---
+title: "Project 1 JSON"
+author: "Evan Elms, Cameron Evangelista"
+output:  
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_floyesat: FALSE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+library(DT)
+```
+
+# Let's put the Joy in JSON!
+
+# What packages "pack" the most punch for loading JSON
+
+Reviewing CRANs documentation and list of packages for importing JSON formatted data, the package most frequently used based on the number of versions released and number of downloads is [jsonlite](https://cran.r-project.org/web/packages/jsonlite/index.html). Outlined in the [quick start vignette](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html) the function `fromJSON` was created to read in data. This function has a sereies of [variables](https://www.rdocumentation.org/packages/jsonlite/versions/1.6/topics/toJSON%2C%20fromJSON) to customize the input process and format the data when pulling the data from the web into a R object. 
+
+# What's the ta-da in our da-ta...
+
+# Just regular tables 
+
+# Plots with some "pizzazz"
