@@ -12,16 +12,81 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(knitr)
+library(jsonlite)
 library(DT)
 ```
 
 # Let's put the Joy in JSON!
 
+Add text on what is JSON and why do we like it! 
+
 # What packages "pack" the most punch for loading JSON
 
 Reviewing CRANs documentation and list of packages for importing JSON formatted data, the package most frequently used based on the number of versions released and number of downloads is [jsonlite](https://cran.r-project.org/web/packages/jsonlite/index.html). Outlined in the [quick start vignette](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html) the function `fromJSON` was created to read in data. This function has a sereies of [variables](https://www.rdocumentation.org/packages/jsonlite/versions/1.6/topics/toJSON%2C%20fromJSON) to customize the input process and format the data when pulling the data from the web into a R object. 
 
-# What's the ta-da in our da-ta...
+# Gotta Catch 'Em All 
+
+In July 2016, Pokémon Go was released to the world and quickly rose to the top as the most popular mobile app. Combining the geographical location of the mobile device and the camera, users could hunt for creatures of varying types in attempt to capture them and battle others. Since the release of the original Pocket Monster video game Red and Green in 1996, the goal is to defeat other players in battles with their pocket monsters by type advantage and attack/defense stats in the hopes of becoming a Pokémon Master. 
+
+Over the past three years players of Pokémon Go have collected data on the app to help improve their odds of finding strong and rare beasts. These data sets have been used to analyze everything from the [spawn rate based on the monster type](https://pokemongohub.net/generation-2/analysis-time-day-influences-different-pokemon-type-spawns/) to [identifying biomes using k means clustering](https://www.incidentalfindings.org/2018/09/pokemon-go-spawning-and-biomes/). 
+
+So for our data analysis we put on our [10 year old](https://youtu.be/TNYQG9cRlxk?t=63) thinking caps and set out to answer this question: 
+
+"Does the type and size of the Pokémon affect it's base attack and defensive power?"
+
+To answer this question we'll be using this [data set](https://raw.githubusercontent.com/pokemongo-dev-contrib/pokemongo-json-pokedex/master/output/pokemon.json) and tackling these variables:  
+
++ Pokémon Type  
++ Pokémon Size  
++ Base Attack Stat  
++ Base Defense Stat  
+
+```{r pokemon_data, echo=TRUE,warning=FALSE,message=FALSE}
+allPokemonData <- fromJSON("https://raw.githubusercontent.com/pokemongo-dev-contrib/pokemongo-json-pokedex/master/output/pokemon.json")
+```
+
+## Pokémon Type 
+
+A Pokémon's primary type is the most fundamental piece in a player's strategy when preparing for battles. There are currently eighteen types, each having it own strengths and weaknesses. The common example in every game explains that a Fire Type Pokémon will have the advantage against a Grass type but will be at a disadvantage when competing with a Water type. A popular site for Pokémon strategizing is __Serebii.net__ where they have the full [type chart](https://www.serebii.net/games/type.shtml) of strenths and weaknesses.
+
+Add more about why we choose this categorical column. 
+
+```{r pokemon_types, echo=TRUE,warning=FALSE,message=FALSE}
+pokemonTypes <- allPokemonData$types
+primaryTypeNames <- c()
+secondaryTypeNames <- c()
+for(i in 1:length(pokemonTypes)){
+  primaryTypeNames <- c(primaryTypeNames, pokemonTypes[[i]][1,2])
+  secondaryTypeNames <- c(secondaryTypeNames, pokemonTypes[[i]][2,2])
+}
+```
+
+## Pokémon Size 
+
+With each Pokémon in the data set, height and weight attributes were created by the game developers for the realistic style of virtual reality game play. However, we want to determine if the developers applied any type of leveling so that a larger monster would have an increased attack stat. For example, getting attacked by a cat-like Pokémon should have less attack power than if you were attacked by a bear-like Pokémon. 
+
+To turn height and weight into a categorical variable, we can leverage the "Buddy Size" column that has the following levels:
+
++ Baby  
++ Shoulder  
++ Medium  
++ Big
++ Flying
+
+The game developers wanted to give players the option to have their favorite Pokémon walk beside them in the virtual space. However, the Flying level is not based on size but the type of Pokémon. To transform all Flying monsters into the appropriate "Buddy Size" we can look the following boxplot for height comparison:
+
+```{r size_boxplots, echo=FALSE,warning=FALSE,message=FALSE}
+pokemonSizes <- allPokemonData %>% select(buddySize, height)
+pokemonSizes <- tibble(pokemonSizes[[1]][,2],pokemonSizes$height)
+colnames(pokemonSizes) <- c("Size","Height")
+pokemonSizes <- pokemonSizes %>% mutate(Size = factor(Size, levels = c("Baby","Shoulder","Medium","Big","Flying"))) %>% arrange(Size) %>% filter(Size != "Flying") %>% filter(Height < 5)
+g <- ggplot(pokemonSizes, aes(x = Size, y = Height))
+g + geom_boxplot(fill = "white") + labs(title = "Boxplot for Sizes")
+```
+
+From the boxplot, after removing outlies of height greater than 5, if we combine "Baby" and "Shoulder" size into "Small" then there is minimal overlap between in the 1st Quartile and 3rd Quartile range of the sections. So we can then use the height attribute to divide the Flying sizes in to the appropriate sections. 
+
+Add R to divide the flying sections. 
 
 # Just regular tables 
 
