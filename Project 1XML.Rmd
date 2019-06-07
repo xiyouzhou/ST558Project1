@@ -80,10 +80,10 @@ knitr::kable(HealthData %>% filter(state =="United States" & cause_name=="All ca
 table(HealthData$state, HealthData$cause_name)
 ```
 
-* The function (include name here) calculates the % of overall deaths by the top 10 causes {need to create this!}
+* The function (include name here) calculates the % of overall deaths by the top 10 causes {still need to creat a function
 
 ```{r function}
-H1d<-HealthData %>% filter(state =="United States") %>% group_by(cause_name) %>% arrange(cause_name,year) %>% select(cause_name, deaths,year) %>% group_by(year) %>% mutate(totdeaths=sum(deaths)) %>% mutate(Death_Percent = round(deaths/totdeaths*100,1) )
+
   
 ```
 
@@ -91,6 +91,7 @@ H1d<-HealthData %>% filter(state =="United States") %>% group_by(cause_name) %>%
 at least 1 side by side bar, still working on this (actually using faet wrapping):
 
 ``` {r bar}
+H1d<-HealthData %>% filter(state =="United States") %>% group_by(cause_name) %>% arrange(cause_name,year) %>% select(cause_name, deaths,year) %>% group_by(year) %>% mutate(totdeaths=sum(deaths)) %>% mutate(Death_Percent = round(deaths/totdeaths*100,1) )
 ggplot(H1d, aes(x=year ,y=Death_Percent)) + geom_bar(stat="identity") + facet_wrap(aes(cause_name)) 
 
 ```
@@ -102,5 +103,5 @@ ggplot(H1d, aes(x=year ,y=Death_Percent)) + geom_bar(stat="identity") + facet_wr
 Data<- HealthData %>% filter(state =="United States" & cause_name=="All causes") %>% select(year, deaths, aadr) %>% arrange(year)
 ggplot(Data, aes(x=year, y = deaths, group=1))  + geom_line(lwd = 1.5, color = "red")
 
-ggplot(Data, aes(x=year, y = aadr, group=1))  + geom_line(lwd = 1.5, color = "blue")
+ggplot(Data, aes(x=year, y = aadr, group=1))  + geom_line(lwd = 1.5, color = "blue") + theme(axis.text.x=element_blank())
 ```
