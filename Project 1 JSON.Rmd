@@ -82,7 +82,7 @@ With the primary type of a monster setting the odds of success based on either h
 
 Choosing Pokémon Type as our first categorical variable when analyzing what factors create a strategic advantage in battle was fundamental and from the graph below while many types will be clusterd in a central area, it is the more scarce terrain we are interested in. 
 
-```{r pokemon_types, echo=TRUE,warning=FALSE,message=FALSE}
+```{r pokemon_types, echo=FALSE,warning=FALSE,message=FALSE}
 pokemonTypes <- allPokemonData$types
 primaryTypeNames <- c()
 secondaryTypeNames <- c()
@@ -166,6 +166,28 @@ gDefense + geom_bar() +
 
 # Just regular tables 
 
+Below you can find our final data set with all the variables listed above:
+
+```{r all_variables, echo=TRUE,warning=FALSE,message=FALSE}
+pokemonSizeTemp <- allPokemonData %>% select(buddySize, height)
+pokemonSizeTemp <- tibble(pokemonSizeTemp[[1]][,2],pokemonSizeTemp$height)
+colnames(pokemonSizeTemp) <- c("Size","Height")
+sizeAnalysis <- pokemonSizeTemp %>% transmute(
+                            "Size" = ifelse(Size == "Flying",ifelse(Height <= 0.41, "Small", ifelse(Height <= 1, "Medium","Large")), 
+                                            ifelse(Size == "Big", "Large", ifelse(Size == "Baby" | Size == "Shoulder", "Small","Medium"))))
+pokemonTypeTemp<- allPokemonData$types
+primaryType <- c()
+secondaryType <- c()
+for(i in 1:length(pokemonTypeTemp)){
+  primaryType <- c(primaryType, pokemonTypeTemp[[i]][1,2])
+  secondaryType <- c(secondaryType, pokemonTypeTemp[[i]][2,2])
+}
+attackTemp <- allPokemonData$stats[1]
+defenseTemp <- allPokemonData$stats[2]
+pokemonAnalysis <- tibble(primaryType,secondaryType,sizeAnalysis,attackTemp,defenseTemp)
+colnames(pokemonAnalysis) <- c("Primary Type","Secondary Type","Size","Base Attack","Base Defense")
+knitr::kable(head(pokemonAnalysis, n = 15),caption = "Preview of Pokémon Data")
+```
 
 # Plots with some "pizzazz"
 
