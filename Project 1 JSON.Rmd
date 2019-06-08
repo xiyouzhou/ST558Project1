@@ -18,7 +18,36 @@ library(DT)
 
 # Let's put the Joy in JSON!
 
-Add text on what is JSON and why do we like it! 
+JavaScript Object Notation (JSON) was created to resolve a common issue in HTML webpages during the late 90's where a session, a connection between a personal user's machine and the server they were interacting with, had to maintain a session. If this session was ever terminated unexpectedly then all the information in that session was lost as the server had no means to maintain or store any information the user did. For example, if you were shopping for clothes and you had saved three items to your cart but the power went out then all the items in your cart would be lost! To resolve this JSON was created to be `stateless`, where the state of the session did not impact the information being sent between the user and the server. The original developers also wanted the code to be "human-readible", this benefited humans when attempting to retrieve or resolve data issues as they could now idenitfy the type of information being sent between the user's machine and the server. Previously the data was only machine readible so any attempts to capture or understand the data required extensive debugging hours, where programmers reverse engineer code to understand how the machines created the data. 
+
+Looking back at the first example involving the shopping cart, applying JSON formatting to the situation would have involved the user's machine calling the server with the following example set of information:
+
+```{r JSON_example, echo=TRUE,warning=FALSE,message=FALSE,eval=FALSE}
+{
+  "shopping_cart" : {
+      "customer" : {
+          "customer_id" : 12345
+          "name" : "John Piper"
+      }
+      "items" : {
+          "item_1" : {
+            "name" : "Sleeping Bag"
+            "item_id" : 985
+            "action" : "add"
+          }
+          "item_2" : {
+            "name" : "Camp fire wood"
+            "item_id" : 458
+            "action" : "add"
+          }
+      }
+  }
+}
+```
+
+The above example would be sent from the user's machine to an Application Programming Interface (API) that was developed to accept shopping cart information from customers. The example has information on the customer, two items they want to add, and the ids for all values in the JSON. The advantage to this is that it's easy for humans to understand what tasks the customer is asking the server to perform while being machine readible using the ids as reference points for the server to find all the required information. Now if the customer had not selected their third item yet but the power went out then the first two items would have been saved as the customer had already added them to their shopping cart and the server had already processed this information. This makes the framework that connects the personal machine and the server `stateless` since the state of the user's machine does not impact the state of the server, and vice versa. 
+
+JSON was built for simplicity of sending data between machines with minimal loss of data while being easy to read and understand for both humans and machines. 
 
 # What packages "pack" the most punch for loading JSON
 
@@ -137,4 +166,6 @@ gDefense + geom_bar() +
 
 # Just regular tables 
 
+
 # Plots with some "pizzazz"
+
