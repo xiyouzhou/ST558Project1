@@ -18,7 +18,7 @@ library(DT)
 
 # Let's put the Joy in JSON!
 
-JavaScript Object Notation (JSON) was created to resolve a common issue in HTML webpages during the late 90's where a session, a connection between a personal user's machine and the server they were interacting with, had to maintain a session. If this session was ever terminated unexpectedly then all the information in that session was lost as the server had no means to maintain or store any information the user did. For example, if you were shopping for clothes and you had saved three items to your cart but the power went out then all the items in your cart would be lost! To resolve this JSON was created to be `stateless`, where the state of the session did not impact the information being sent between the user and the server. The original developers also wanted the code to be "human-readible", this benefited humans when attempting to retrieve or resolve data issues as they could now idenitfy the type of information being sent between the user's machine and the server. Previously the data was only machine readible so any attempts to capture or understand the data required extensive debugging hours, where programmers reverse engineer code to understand how the machines created the data. 
+JavaScript Object Notation (JSON) was created to resolve a common issue in HTML webpages during the late 90s where a session, a connection between a personal user's machine and the server they were interacting with, had to remain active with no time lapse. If this session was ever terminated unexpectedly then all the information in that session was lost, as the server had no means to maintain or store any information the user performed. For example, if you were shopping for camping gear and you had saved three items to your cart but the power went out then all the items in your cart would be lost! To resolve this, JSON was created to be `stateless`, where the state of the session did not impact the information being sent between the user and the server. The original developers also wanted the code to be "human-readible". This benefited humans when attempting to retrieve or resolve data issues as they could now idenitfy the type of information being sent between the user's machine and the server. Previously the data was only machine readible so any attempts to capture or understand the data required extensive debugging hours, where programmers reverse engineer code to understand how the machines created the data. 
 
 Looking back at the first example involving the shopping cart, applying JSON formatting to the situation would have involved the user's machine calling the server with the following example set of information:
 
@@ -45,25 +45,25 @@ Looking back at the first example involving the shopping cart, applying JSON for
 }
 ```
 
-The above example would be sent from the user's machine to an Application Programming Interface (API) that was developed to accept shopping cart information from customers. The example has information on the customer, two items they want to add, and the ids for all values in the JSON. The advantage to this is that it's easy for humans to understand what tasks the customer is asking the server to perform while being machine readible using the ids as reference points for the server to find all the required information. Now if the customer had not selected their third item yet but the power went out then the first two items would have been saved as the customer had already added them to their shopping cart and the server had already processed this information. This makes the framework that connects the personal machine and the server `stateless` since the state of the user's machine does not impact the state of the server, and vice versa. 
+The above example would be sent from the user's machine to an Application Programming Interface (API) that was developed to accept shopping cart information from customers. The example has information on the customer, two items they want to add, and the ids for all values in the JSON. The advantage to this is that it's easy for humans to understand what tasks the customer is asking the server to perform, while being machine readible using the ids as reference points for the server to find all the required information. Now if the customer had not selected their third item yet but the power went out then the first two items would have been saved as the customer had already added them to their shopping cart and the server had already processed this information. This makes the framework that connects the personal machine and the server `stateless` since the state of the user's machine does not impact the state of the server, and vice versa. 
 
 JSON was built for simplicity of sending data between machines with minimal loss of data while being easy to read and understand for both humans and machines. 
 
 # What packages "pack" the most punch for loading JSON
 
-Reviewing CRANs documentation and list of packages for importing JSON formatted data, the package most frequently used based on the number of versions released and number of downloads is [jsonlite](https://cran.r-project.org/web/packages/jsonlite/index.html). Outlined in the [quick start vignette](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html) the function `fromJSON` was created to read in data. This function has a sereies of [variables](https://www.rdocumentation.org/packages/jsonlite/versions/1.6/topics/toJSON%2C%20fromJSON) to customize the input process and format the data when pulling the data from the web into a R object. 
+Reviewing CRANs [documentation and list of packages](https://cran.r-project.org/web/packages/available_packages_by_name.html) for importing JSON formatted data, the package most frequently used based on the number of versions released and number of downloads is [jsonlite](https://cran.r-project.org/web/packages/jsonlite/index.html). Outlined in the [quick start vignette](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html) the function `fromJSON` was created to read in data. This function has a sereies of [variables](https://www.rdocumentation.org/packages/jsonlite/versions/1.6/topics/toJSON%2C%20fromJSON) to customize the input process and format the data when pulling the data from the web into a R object. 
 
 # Gotta Catch 'Em All 
 
-In July 2016, Pokémon Go was released to the world and quickly rose to the top as the most popular mobile app. Combining the geographical location of the mobile device and the camera, users could hunt for creatures of varying types in attempt to capture them and battle others. Since the release of the original Pocket Monster video game Red and Green in 1996, the goal is to defeat other players in battles with their pocket monsters by type advantage and attack/defense stats in the hopes of becoming a Pokémon Master. 
+In July 2016, _Pokémon Go_ was released to the world and quickly rose to the top as the most popular mobile app. Combining the geographical location of the mobile device and the camera, users could hunt for creatures of varying types in an attempt to capture them and battle others. Since the release of the original Pocket Monster video game _Red and Green_ in 1996, the goal is to defeat other players in battles with their pocket monsters by type advantage and attack/defense stats in the hopes of becoming a Pokémon Master. 
 
-Over the past three years players of Pokémon Go have collected data on the app to help improve their odds of finding strong and rare beasts. These data sets have been used to analyze everything from the [spawn rate based on the monster type](https://pokemongohub.net/generation-2/analysis-time-day-influences-different-pokemon-type-spawns/) to [identifying biomes using k means clustering](https://www.incidentalfindings.org/2018/09/pokemon-go-spawning-and-biomes/). 
+Over the past three years players of _Pokémon Go_ have collected data on the app to help improve their odds of finding strong and rare beasts. These data sets have been used to analyze everything from the [spawn rate based on the monster type](https://pokemongohub.net/generation-2/analysis-time-day-influences-different-pokemon-type-spawns/) to [identifying biomes using k means clustering](https://www.incidentalfindings.org/2018/09/pokemon-go-spawning-and-biomes/). 
 
 So for our data analysis we put on our [10 year old](https://youtu.be/TNYQG9cRlxk?t=63) thinking caps and set out to answer these questions: 
 
-"Does the type and size of the Pokémon affect it's base attack and defensive power? Furthermore, does any combination of these variables give players a strategic advantage during battles?"
+"Does the type and size of the Pokémon affect its base attack and defensive power? Furthermore, does any combination of these variables give players a strategic advantage during battles?"
 
-To answer this question we'll be using this [data set](https://raw.githubusercontent.com/pokemongo-dev-contrib/pokemongo-json-pokedex/master/output/pokemon.json) and tackling these variables:  
+To answer this question, we'll be using this [data set](https://raw.githubusercontent.com/pokemongo-dev-contrib/pokemongo-json-pokedex/master/output/pokemon.json) and tackling these variables:  
 
 + Pokémon Type  
 + Pokémon Size  
@@ -76,11 +76,11 @@ allPokemonData <- fromJSON("https://raw.githubusercontent.com/pokemongo-dev-cont
 
 ## Pokémon Type 
 
-A Pokémon's primary type is the most fundamental piece in a player's strategy when preparing for battles. There are currently eighteen types, each having it own strengths and weaknesses. The common example in every game explains that a Fire Type Pokémon will have the advantage against a Grass type but will be at a disadvantage when competing with a Water type. A popular site for Pokémon strategizing is __Serebii.net__ where they have the full [type chart](https://www.serebii.net/games/type.shtml) of strenths and weaknesses.
+A Pokémon's primary type is the most fundamental piece in a player's strategy when preparing for battles. There are currently eighteen types, each having its own strengths and weaknesses. The common example in every game explains that a Fire Type Pokémon will have the advantage against a Grass type but will be at a disadvantage when competing with a Water type. A popular site for Pokémon strategizing is __Serebii.net__ where they have the full [type chart](https://www.serebii.net/games/type.shtml) of strengths and weaknesses.
 
-With the primary type of a monster setting the odds of success based on either how many types are weak against it's attacks or how minimal damage it takes when being attacked by other types, the greater factor can be the scarcity of Pokémon in a given type. In the first Pokémon game Red and Green, there was only one dragon type __Dratini__ and out of 151 original creaters made it one the rarest in the game. When tallying all base stats for the first generation of Pokémon, the final evolution of this dragon, __Dragonite__, is [ranked second](https://www.serebii.net/pokedex/stat/all.shtml) only losing to the main legendary Pokémon __Mewtwo__ that could only be captured at special events. 
+With the primary type of a monster setting the odds of success based on either how many types are weak against its attacks or how minimal damage it incurs when being attacked by other types, the greater factor can be the scarcity of Pokémon in a given type. In the first Pokémon game _Red and Green_, there was only one dragon type __Dratini__ and out of 151 original creaters made it one the rarest in the game. When tallying all base stats for the first generation of Pokémon, the final evolution of this dragon, __Dragonite__, is [ranked second](https://www.serebii.net/pokedex/stat/all.shtml) only losing to the main legendary Pokémon __Mewtwo__ that could only be captured at special events. 
 
-Choosing Pokémon Type as our first categorical variable when analyzing what factors create a strategic advantage in battle was fundamental and from the graph below while many types will be clusterd in a central area, it is the more scarce terrain we are interested in. 
+Choosing Pokémon Type as our first categorical variable when analyzing what factors create a strategic advantage in battle was fundamental. In the graphs below, while many types will be clusterd in a central area, it is the more scarce terrain we are interested in. 
 
 ```{r pokemon_types, echo=FALSE,warning=FALSE,message=FALSE}
 pokemonTypes <- allPokemonData$types
@@ -98,8 +98,8 @@ secondaryTypeStats <- data.frame(secondaryTypeStats)
 secondaryTypeStats <- secondaryTypeStats[complete.cases(secondaryTypeStats), ]
 gPrim <- ggplot(primaryTypeStats, aes(x = baseAttack , y = baseDefense))
 gSec <- ggplot(secondaryTypeStats, aes(x = baseAttack , y = baseDefense))
-gPrim + geom_point(aes(colour = primaryTypeNames)) + labs(title = "Primary Type: Base Attack vs Base Deffense")
-gSec + geom_point(aes(colour = secondaryTypeNames)) + labs(title = "Secondary Type: Base Attack vs Base Deffense")
+gPrim + geom_point(aes(colour = primaryTypeNames)) + labs(title = "Primary Type: Base Attack vs Base Defense")
+gSec + geom_point(aes(colour = secondaryTypeNames)) + labs(title = "Secondary Type: Base Attack vs Base Defense")
 ```
 
 ## Pokémon Size 
@@ -114,7 +114,7 @@ To turn height and weight into a categorical variable, we can leverage the "Budd
 + Big
 + Flying
 
-The game developers wanted to give players the option to have their favorite Pokémon walk beside them in the virtual space. However, the Flying level is not based on size but the type of Pokémon. To transform all Flying monsters into the appropriate "Buddy Size" we can look the following boxplot for height comparison:
+The game developers wanted to give players the option to have their favorite Pokémon walk beside them in the virtual space. However, the Flying level is not based on size but the type of Pokémon. To transform all Flying monsters into the appropriate "Buddy Size" we can look at the following boxplot for height comparison:
 
 ```{r size_boxplots, echo=FALSE,warning=FALSE,message=FALSE}
 pokemonSizes <- allPokemonData %>% select(buddySize, height)
@@ -126,7 +126,7 @@ g <- ggplot(pokemonSizes, aes(x = Size, y = Height))
 g + geom_boxplot(fill = "white") + labs(title = "Boxplot for Sizes")
 ```
 
-From the boxplot, after removing outlies of height greater than 5, if we combine "Baby" and "Shoulder" size into "Small" then there is minimal overlap between in the 1st Quartile and 3rd Quartile range of the sections. So we can then use the height attribute to divide the Flying sizes in to the appropriate sections. From the summary table below, we will use the 1st and 3rd quartile values to filter Flying, along with changing "Big" to "Large".
+From the boxplot, after removing outliers of height greater than 5, if we combine "Baby" and "Shoulder" size into "Small" then there is minimal overlap between in the 1st Quartile and 3rd Quartile range of the sections. We can then use the height attribute to divide the Flying sizes into the appropriate sections. From the summary table below, we will use the 1st and 3rd quartile values to filter Flying, along with changing "Big" to "Large".
 
 ```{r summary_sizes, echo=FALSE,warning=FALSE,message=FALSE}
 summaryOfSizes <- cbind(summary(filter(filteredSizes, Size == "Baby" | Size == "Shoulder") %>% select(Height)),
@@ -136,11 +136,11 @@ colnames(summaryOfSizes) <- c("Small","Medium","Large")
 knitr::kable(summaryOfSizes)
 ```
 
-From the graphs and analysis on "Buddy Size", we choose this to be our second categorical variable to add a real world level on understanding how large or small a creater is impacts their fighting stats and if the game developers factored in this variable when creating the Pokémon ecosystem. 
+From the graphs and analysis on "Buddy Size", we chose this to be our second categorical variable to add a real world level on understanding how large or small a creater is impacts their fighting stats and if the game developers factored in this variable when creating the Pokémon ecosystem. 
 
 ## Base Attack Stat
 
-When hunting for pocket monsters, you can come accross the same breed however their attack rates will vary. This is due to a sereies of random variables the game developers built in so that no two monsters will be the exact same and therefore keep the battles less predictable. While players can speend hours, even days, hunting for the best monster given a specific breed they are guranteed that all monsters of the same species will have a minimal attack rate, which is called the "Base Attack Stat". For example, a player could capture the strongest mouse-like Pokémon but it's highest attack could still be microscopic when compared to the bast attack of an elephant-like Pokémon. 
+When hunting for pocket monsters, you can come across the same breed however their attack rates will vary. This is due to a series of random variables the game developers built in so that no two monsters will be the exact same and therefore keep the battles less predictable. While players can spend hours, even days, hunting for the best monster given a specific breed they are guranteed that all monsters of the same species will have a minimal attack rate, which is called the "Base Attack Stat". For example, a player could capture the strongest mouse-like Pokémon but its highest attack could still be microscopic when compared to the base attack of an elephant-like Pokémon. 
 
 Base attack is vital when creating a strategic deck of Pokémon and from the graph below can have high variability, other than the spike at 240, when factoring no other Pokémon attributes. 
 
@@ -153,7 +153,7 @@ gAttack + geom_bar() +
 
 ## Base Defense Stat
 
-The other major factor when building a strong set of Pokémon is their base defense stat. With many of the examples from above, a monster in battler will annihilate a player's chances of succeeding if their base attack is 1 and they're defeate by a moving leaf in the wind. As with any strategy, from war to sports, a strong defense is indispensable in maintaining any odds of winning given a poor attack or event. 
+The other major factor when building a strong set of Pokémon is their base defense stat. With many of the examples from above, a monster in battle will annihilate a player's chances of succeeding if their base attack is 1 and they're defeated by a moving leaf in the wind. As with any strategy, from war to sports, a strong defense is indispensable in maintaining any odds of winning given a poor attack or event. 
 
 With the same spike as seen in the Base Attack graph, the defense stat is also variable but slightly more concentrated in the range of 75 to 175 when compared to attack variables. 
 
