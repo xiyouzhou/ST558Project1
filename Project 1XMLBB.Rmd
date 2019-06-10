@@ -1,0 +1,164 @@
+---
+title: "ST 558 Project 1 XML"
+author: "Ariel Macari, Xiyou Zhou"
+output:
+  html_document:
+    cold_folding: hide
+    toc: yes
+    toc_float: FALSE
+    toc_depth: 3
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning=FALSE, message = FALSE)
+library(tidyverse)
+library (XML)
+library(DT)
+
+
+```
+
+# What is XML Data?
+
+eXtensible Markup Language (XML) is a type of file used to store data.  The stored data includes annotations to format the data but remins invisible to the user end. XML Data can be opened in a web browswer or any text editor.  It is good use to store data for examples like a medical record.
+
+
+[XML Data Example](https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.ib6p000/ib6p9c4m2.htm)
+
+# R Packages
+The following lists the packages that were used in this analysis
+
+* XML - This package is a collection of functions 
+
+* Tidyverse - The tidyverse is a system of packages that helps in read, clean, and present data.  The tidyverse includes the following packages     
+    + ggplot2 - functions for creating graphics  
+    + ddplyr - functions for data manipulation  
+    + tidyr - functions to tidy data
+    + readr- functions to read in files  
+    + purr - functions to work with functions and vectors
+    + tibble - a data frame with better options
+    + stringr - functions to help working with strings
+    + forcasts - functions to help with factors in R
+
+* DT - This package allows R data ojbects to be displayed as tables on HTML pages.
+
+# Data and Dataset
+The dataset presents the age adjusted death rate for the 10 leading causes of deaths in the United States from 1999 - 2013.  The dataset includes the number of deaths by cause for each year and state.  Additionally the data set includes the Age-Adjusted Rate, which adjusts the the populations if each of the states had the same age distributions.
+
+
+The data was found in [Dataset](https://catalog.data.gov/dataset/age-adjusted-death-rates-for-the-top-10-leading-causes-of-death-united-states-2013)
+
+The data was read by the following:
+* First, a reference to the website as an object called `health`. 
+* Next, the xmL referenced was parsed into a structure referencing the xml tree with `xmlParse`.
+* Last the data was brought in a dataframe with the function `xmlToDataFrame`.  The function requests that a list of the xmL nodes to be processed be included.  The nodes resided in "//response//row//(the attribute)" for each column.  
+* The columns were combined and the columns were named
+* The number of deaths and aadr were converted to numeric.
+* The following shows the code that was used to import the data into RStudio and the data.  
+
+``` {r Dataset, echo = TRUE}
+health<-(file = "http://data.cdc.gov/api/views/bi63-dtpu/rows.xml?accessType=DOWNLOAD")
+xmldoc <- xmlParse(health)
+
+year <- xmlToDataFrame(nodes = getNodeSet(xmldoc, "//response//row//year"))
+cause_name <- xmlToDataFrame(nodes = getNodeSet(xmldoc, "//response//row//cause_name"))
+state <- xmlToDataFrame(nodes = getNodeSet(xmldoc, "//response//row//state"))
+deaths <- xmlToDataFrame(nodes = getNodeSet(xmldoc, "//response//row//deaths"))
+aadr <- xmlToDataFrame(nodes = getNodeSet(xmldoc, "//response//row//aadr"))
+
+HealthData<-(cbind(year, cause_name, state, deaths, aadr)) 
+colnames(HealthData)<- (c("year", "cause_name", "state", "deaths", "aadr"))
+
+
+#convert to numeric!
+HealthData$deaths<-as.numeric(as.character(HealthData$deaths))
+HealthData$aadr<-as.numeric(as.character(HealthData$aadr))
+
+# show the data!
+(datatable(HealthData))
+```
+
+* **The function (include name here) calculates ...**
+
+```{r function}
+#create a function
+  
+```
+
+
+# Tables 
+
+
+* A contingency table showing that the dataset includes 18 years of the top 10 causes of death by state is shown below.  The top 10 causes of death have remained the same throughout the years of 1999 - 2016.  The following are the causes:  
+* All causes - The total number of deaths 
+* Alzheimer's disease  
+* Cancer  
+* CLRD - Chronic Lower Respiratory Disease  
+* Diabetes  
+* Heart Disease  
+* Influenz and pneumonia  
+* kidney disease  
+* stroke  
+* suicide  
+* unintentional injury  
+
+```{r datatable1}
+table(HealthData$state, HealthData$cause_name)
+```
+
+
+# New Variable
+A new variable `Death_Percent` was created to calculate the % of deaths attributed by each causes per year at the National and State levels.  
+
+``` {R new variable}
+US <-HealthData %>% filter(state =="United States") %>% group_by(cause_name) %>% arrange(cause_name,year) %>%  group_by(year) %>% mutate(totdeaths=max(deaths)) %>% mutate(Death_Percent = round(deaths/totdeaths*100,1) ) %>% filter(cause_name != c("All causes"))
+
+State <-HealthData %>%  group_by(cause_name) %>% arrange(cause_name,year, state ) %>% group_by(year,state) %>% mutate(totdeaths=max(deaths)) %>% mutate(Death_Percent = round(deaths/totdeaths*100,1) )  %>% filter(cause_name != c("All causes"))
+
+```
+
+# Numeric Summary
+The following shows the meand and standard deviation for % of deaths caussed by each cause and the aadr.
+
+```{R numeric_summary}
+knitr::kable(US %>% group_by(cause_name) %>% summarise(Mean_Deaths =round(mean(Death_Percent),1), stdev_deaths =round(sd(Death_Percent),2), mean_aadr=(round(mean(aadr),1)), stdev_aadr=round(sd(aadr),2)))
+
+```
+
+# Plot
+A barplot for each cause by year is included below.   The results show that Heart Disease and Cancer cause ~50% of the deaths in the US!  The cause of deaths for heat disease is decreasing.  However, the rate of deaths due to Althzheimers Disease is increasing ! 
+
+``` {r bar}
+
+ggplot(US, aes(x=year ,y=Death_Percent)) + geom_bar(stat="identity") + facet_wrap(aes(cause_name))  + theme(axis.text.x=element_blank())+ labs(title = "Percents of Deaths attributed by each cause")  +  ylab("% of Overall Deaths Contributed to Cause - US")
+
+```
+
+The % of deaths were attributed to the top ten causes by state.  A boxplot was then plotted by cause.  The results show the distribution for the causes of each death.  The results show that Heart Disease and Cancer are the main causes of deaths in the US.
+
+
+``` {r box}
+ggplot(US, aes(x=cause_name ,y=Death_Percent)) + geom_boxplot() + theme(axis.text.x=element_text(angle = -90, hjust = 0)) +ylab("% of Overall Deaths Contributed to Cause - US") +  labs(title = "% of National Deaths - % attributed to each cause  US causes of death") + xlab("") 
+```
+
+
+The plot below shows the number of deaths per year and the aadr. the total number has increased by about ~16% since 1999.  The aadr rate has decreased from 880 to about 720.
+
+```{r scatter}
+Data<- HealthData %>% filter(state =="United States" & cause_name=="All causes") %>% select(year, deaths, aadr) %>% arrange(year)
+ggplot(Data, aes(x=year, y = deaths, group=1))  + geom_line(lwd = 1.5, color = "red") + theme(axis.text.x=element_text(angle = -90, hjust = 0)) + labs(title = "National - Total Number of Deaths")
+
+ggplot(Data, aes(x=year, y = aadr, group=1))  + geom_line(lwd = 1.5, color = "blue") + theme(axis.text.x=element_text(angle = -90, hjust = 0)) + labs(title = "National - aadr")
+
+```
+
+
+
+Remaining materials: 
+Function, 
+Add more plots?
+Did i cover everything in the aassigment?
+
+
+
