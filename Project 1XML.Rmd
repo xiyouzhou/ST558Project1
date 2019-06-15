@@ -79,12 +79,45 @@ HealthData$aadr<-as.numeric(as.character(HealthData$aadr))
 (datatable(HealthData))
 ```
 
-* **The function (include name here) calculates ...**
+* **The function (summary) calculates the deaths and age adjusted death rate**
 
-```{r function}
-#create a function
+```{r function1}
+HealthData2<-tbl_df(HealthData)
+
+apply(X = select(HealthData2, deaths:aadr), MARGIN = 2, 
+      FUN = summary, na.rm = TRUE)
   
 ```
+
+
+
+another function to list sum,mean, sd and IQR of death and age adjusted death(aadr)
+
+
+```{r,function2}
+getsumary <-function(matx, ...) {
+  
+  if(!is.matrix(matx)) stop ("Wrong input type!")
+  
+  IQR <-colIQRs(matx,na.rm=T)
+  #names(IQR) <- NULL
+ 
+  sum<-colSums(matx,na.rm=T)
+  mean<-colMeans(matx,na.rm=T)
+  sd<-colSds(matx,na.rm=T)
+  
+  return (list(sum,mean,sd, IQR))
+}
+
+
+# test  with iris   
+# getsumary(as.matrix(iris %>% select(-Species)))
+getsumary(as.matrix(HealthData %>% select(deaths,aadr)))
+
+
+```
+
+
 
 
 # Tables 
@@ -126,6 +159,35 @@ knitr::kable(US %>% group_by(cause_name) %>% summarise(Mean_Deaths =round(mean(D
 
 ```
 
+```{r}
+
+# calculated deaths by year and cause_name
+A<-HealthData %>% filter(cause_name != c("All causes")) %>% select(year,cause_name,deaths) %>% arrange(year,cause_name)%>%
+  group_by(year,cause_name) %>% summarise(totaldeath=sum(deaths))%>% spread(key = cause_name, value = totaldeath)
+
+#calculate col means (average death by 18 years)
+B<-colMeans(select(as.data.frame(A),2:11), na.rm = TRUE)
+
+#bind role of A, B
+c<-dplyr::bind_rows(A,B)
+kable(c)
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
 # Plot
 A barplot for each cause by year is included below.   The results show that Heart Disease and Cancer cause ~50% of the deaths in the US!  The cause of deaths for heat disease is decreasing.  However, the rate of deaths due to Althzheimers Disease is increasing ! 
 
@@ -159,6 +221,6 @@ Remaining materials:
 Function, 
 Add more plots?
 Did i cover everything in the aassigment?
-
+how to explain death increased substantially after 2009?  why deaths increase but aadr degrease? 
 
 
