@@ -1,0 +1,237 @@
+---
+title: "Project 1 JSON"
+author: "Evan Elms, Cameron Evangelista"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_floyesat: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+library(jsonlite)
+library(DT)
+```
+
+# Let's put the Joy in JSON!
+
+JavaScript Object Notation (JSON) was created to resolve a common issue in HTML webpages during the late 90s where a session, a connection between a personal user's machine and the server they were interacting with, had to remain active with no time lapse. If this session was ever terminated unexpectedly then all the information in that session was lost, as the server had no means to maintain or store any information the user performed. For example, if you were shopping for camping gear and you had saved three items to your cart but the power went out then all the items in your cart would be lost! To resolve this, JSON was created to be `stateless`, where the state of the session did not impact the information being sent between the user and the server. The original developers also wanted the code to be "human-readible". This benefited humans when attempting to retrieve or resolve data issues as they could now idenitfy the type of information being sent between the user's machine and the server. Previously the data was only machine readible so any attempts to capture or understand the data required extensive debugging hours, where programmers reverse engineer code to understand how the machines created the data. 
+
+Looking back at the first example involving the shopping cart, applying JSON formatting to the situation would have involved the user's machine calling the server with the following example set of information:
+
+```{r JSON_example, echo=TRUE,warning=FALSE,message=FALSE,eval=FALSE}
+{
+  "shopping_cart" : {
+      "customer" : {
+          "customer_id" : 12345
+          "name" : "John Piper"
+      }
+      "items" : {
+          "item_1" : {
+            "name" : "Sleeping Bag"
+            "item_id" : 985
+            "action" : "add"
+          }
+          "item_2" : {
+            "name" : "Camp fire wood"
+            "item_id" : 458
+            "action" : "add"
+          }
+      }
+  }
+}
+```
+
+The above example would be sent from the user's machine to an Application Programming Interface (API) that was developed to accept shopping cart information from customers. The example has information on the customer, two items they want to add, and the ids for all values in the JSON. The advantage to this is that it's easy for humans to understand what tasks the customer is asking the server to perform, while being machine readible using the ids as reference points for the server to find all the required information. Now if the customer had not selected their third item yet but the power went out then the first two items would have been saved as the customer had already added them to their shopping cart and the server had already processed this information. This makes the framework that connects the personal machine and the server `stateless` since the state of the user's machine does not impact the state of the server, and vice versa. 
+
+JSON was built for simplicity of sending data between machines with minimal loss of data while being easy to read and understand for both humans and machines. 
+
+# What packages "pack" the most punch for JSON
+
+Reviewing CRANs [documentation and list of packages](https://cran.r-project.org/web/packages/available_packages_by_name.html) for importing JSON formatted data, the package most frequently used based on the number of versions released and number of downloads is [jsonlite](https://cran.r-project.org/web/packages/jsonlite/index.html). Outlined in the [quick start vignette](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html) the function `fromJSON` was created to read in data. This function has a sereies of [variables](https://www.rdocumentation.org/packages/jsonlite/versions/1.6/topics/toJSON%2C%20fromJSON) to customize the input process and format the data when pulling the data from the web into a R object. 
+
+__Add information on the tidyverse packages used!__
+
+# Gotta Catch 'Em All 
+
+In July 2016, _Pokémon Go_ was released to the world and quickly rose to the top as the most popular mobile app. Combining the geographical location of the mobile device and the camera, users could hunt for creatures of varying types in an attempt to capture them and battle others. Since the release of the original Pocket Monster video game _Red and Green_ in 1996, the goal is to defeat other players in battles with their pocket monsters by type advantage and attack/defense stats in the hopes of becoming a Pokémon Master. 
+
+Over the past three years players of _Pokémon Go_ have collected data on the app to help improve their odds of finding strong and rare beasts. These data sets have been used to analyze everything from the [spawn rate based on the monster type](https://pokemongohub.net/generation-2/analysis-time-day-influences-different-pokemon-type-spawns/) to [identifying biomes using k means clustering](https://www.incidentalfindings.org/2018/09/pokemon-go-spawning-and-biomes/). 
+
+So for our data analysis we put on our [10 year old](https://youtu.be/TNYQG9cRlxk?t=63) thinking caps and set out to answer these questions: 
+
+"Does the type and size of the Pokémon affect its base attack and defensive power? Furthermore, does any combination of these variables give players a strategic advantage during battles?"
+
+To answer this question, we'll be using this [data set](https://raw.githubusercontent.com/pokemongo-dev-contrib/pokemongo-json-pokedex/master/output/pokemon.json) and tackling these variables:  
+
++ Pokémon Type  
++ Pokémon Size  
++ Base Attack Stat  
++ Base Defense Stat  
+
+```{r pokemon_data, echo=TRUE,warning=FALSE,message=FALSE}
+allPokemonData <- fromJSON("https://raw.githubusercontent.com/pokemongo-dev-contrib/pokemongo-json-pokedex/master/output/pokemon.json")
+```
+
+## Pokémon Type 
+
+A Pokémon's primary type is the most fundamental piece in a player's strategy when preparing for battles. There are currently eighteen types, each having its own strengths and weaknesses. The common example in every game explains that a Fire Type Pokémon will have the advantage against a Grass type but will be at a disadvantage when competing with a Water type. A popular site for Pokémon strategizing is __Serebii.net__ where they have the full [type chart](https://www.serebii.net/games/type.shtml) of strengths and weaknesses.
+
+With the primary type of a monster setting the odds of success based on either how many types are weak against its attacks or how minimal damage it incurs when being attacked by other types, the greater factor can be the scarcity of Pokémon in a given type. In the first Pokémon game _Red and Green_, there was only one dragon type __Dratini__ and out of 151 original creaters made it one the rarest in the game. When tallying all base stats for the first generation of Pokémon, the final evolution of this dragon, __Dragonite__, is [ranked second](https://www.serebii.net/pokedex/stat/all.shtml) only losing to the main legendary Pokémon __Mewtwo__ that could only be captured at special events. 
+
+Choosing Pokémon Type as our first categorical variable when analyzing what factors create a strategic advantage in battle was fundamental. In the graphs below, while many types will be clusterd in a central area, it is the more scarce terrain we are interested in. 
+
+```{r pokemon_types, echo=FALSE,warning=FALSE,message=FALSE}
+pokemonTypes <- allPokemonData$types
+primaryTypeNames <- c()
+secondaryTypeNames <- c()
+for(i in 1:length(pokemonTypes)){
+  primaryTypeNames <- c(primaryTypeNames, pokemonTypes[[i]][1,2])
+  secondaryTypeNames <- c(secondaryTypeNames, pokemonTypes[[i]][2,2])
+}
+primaryTypeStats <- cbind(primaryTypeNames, allPokemonData$stats[1:2])
+secondaryTypeStats <- cbind(secondaryTypeNames, allPokemonData$stats[1:2])
+primaryTypeStats <- primaryTypeStats  %>% filter(baseAttack <301) %>% filter(baseDefense < 301)
+secondaryTypeStats <- secondaryTypeStats  %>% filter(baseAttack <301) %>% filter(baseDefense < 301)
+secondaryTypeStats <- data.frame(secondaryTypeStats)
+secondaryTypeStats <- secondaryTypeStats[complete.cases(secondaryTypeStats), ]
+gPrim <- ggplot(primaryTypeStats, aes(x = baseAttack , y = baseDefense))
+gSec <- ggplot(secondaryTypeStats, aes(x = baseAttack , y = baseDefense))
+gPrim + geom_point(aes(colour = primaryTypeNames)) + labs(title = "Primary Type: Base Attack vs Base Defense")
+gSec + geom_point(aes(colour = secondaryTypeNames)) + labs(title = "Secondary Type: Base Attack vs Base Defense")
+```
+
+## Pokémon Size 
+
+With each Pokémon in the data set, height and weight attributes were created by the game developers for the realistic style of virtual reality game play. However, we want to determine if the developers applied any type of leveling so that a larger monster would have an increased attack stat. For example, getting attacked by a cat-like Pokémon should have less attack power than if you were attacked by a bear-like Pokémon. 
+
+To turn height and weight into a categorical variable, we can leverage the "Buddy Size" column that has the following levels:
+
++ Baby  
++ Shoulder  
++ Medium  
++ Big
++ Flying
+
+The game developers wanted to give players the option to have their favorite Pokémon walk beside them in the virtual space. However, the Flying level is not based on size but the type of Pokémon. To transform all Flying monsters into the appropriate "Buddy Size" we can look at the following boxplot for height comparison:
+
+```{r size_boxplots, echo=FALSE,warning=FALSE,message=FALSE}
+pokemonSizes <- allPokemonData %>% select(buddySize, height)
+pokemonSizes <- tibble(pokemonSizes[[1]][,2],pokemonSizes$height)
+colnames(pokemonSizes) <- c("Size","Height")
+filteredSizes <- pokemonSizes
+pokemonSizes <- pokemonSizes %>% mutate(Size = factor(Size, levels = c("Baby","Shoulder","Medium","Big","Flying"))) %>% arrange(Size) %>% filter(Size != "Flying") %>% filter(Height < 5)
+g <- ggplot(pokemonSizes, aes(x = Size, y = Height))
+g + geom_boxplot(fill = "white") + labs(title = "Boxplot for Sizes")
+```
+
+From the boxplot, after removing outliers of height greater than 5, if we combine "Baby" and "Shoulder" size into "Small" then there is minimal overlap between in the 1st Quartile and 3rd Quartile range of the sections. We can then use the height attribute to divide the Flying sizes into the appropriate sections. From the summary table below, we will use the 1st and 3rd quartile values to filter Flying, along with changing "Big" to "Large".
+
+```{r summary_sizes, echo=FALSE,warning=FALSE,message=FALSE}
+summaryOfSizes <- cbind(summary(filter(filteredSizes, Size == "Baby" | Size == "Shoulder") %>% select(Height)),
+                        summary(filter(filteredSizes, Size == "Medium") %>% select(Height)),
+                        summary(filter(filteredSizes, Size == "Big") %>% select(Height)))
+colnames(summaryOfSizes) <- c("Small","Medium","Large")
+knitr::kable(summaryOfSizes)
+```
+
+From the graphs and analysis on "Buddy Size", we chose this to be our second categorical variable to add a real world level on understanding how large or small a creater is impacts their fighting stats and if the game developers factored in this variable when creating the Pokémon ecosystem. 
+
+## Base Attack Stat
+
+When hunting for pocket monsters, you can come across the same breed however their attack rates will vary. This is due to a series of random variables the game developers built in so that no two monsters will be the exact same and therefore keep the battles less predictable. While players can spend hours, even days, hunting for the best monster given a specific breed they are guranteed that all monsters of the same species will have a minimal attack rate, which is called the "Base Attack Stat". For example, a player could capture the strongest mouse-like Pokémon but its highest attack could still be microscopic when compared to the base attack of an elephant-like Pokémon. 
+
+Base attack is vital when creating a strategic deck of Pokémon and from the graph below can have high variability, other than the spike at 240, when factoring no other Pokémon attributes. 
+
+```{r summary_base_attack, echo=FALSE,warning=FALSE,message=FALSE}
+baseAttack <- allPokemonData$stats[1]
+gAttack <- ggplot(data = baseAttack, aes(x = baseAttack))
+gAttack + geom_bar() + 
+  labs(x = "Base Attack Value")
+```
+
+## Base Defense Stat
+
+The other major factor when building a strong set of Pokémon is their base defense stat. With many of the examples from above, a monster in battle will annihilate a player's chances of succeeding if their base attack is 1 and they're defeated by a moving leaf in the wind. As with any strategy, from war to sports, a strong defense is indispensable in maintaining any odds of winning given a poor attack or event. 
+
+With the same spike as seen in the Base Attack graph, the defense stat is also variable but slightly more concentrated in the range of 75 to 175 when compared to attack variables. 
+
+```{r summary_base_defense, echo=FALSE,warning=FALSE,message=FALSE}
+baseDefense <- allPokemonData$stats[2]
+gDefense <- ggplot(data = baseDefense, aes(x = baseDefense))
+gDefense + geom_bar() + 
+  labs(x = "Base Defense Value")
+```
+
+# Monster additionals
+
+## The perfect balance (New Variable)
+
+Any Pokémon challenger knows that a single match can come down to the final Pokémon and most strategic players save their strongest for the end. The final Pokémon will usually fall into one these three categories:
+
+* One Hit Knockouts  
+  + A Pokémon who is all attack and doesn't allow the other player to make a move by defeating the opposing Pokémon in a single attack  
+* Slow and Steady  
+  + A Pokémon who is mainly defense and over a long period of time defeats the opposing fighter by wearing down their stamina until they can attack no more  
+* The Double Edge Sword  
+  + A Pokémon who is balanced in their attack and defense stats that lands a victory by being flexible during each turn  
+
+We realized we needed a new measurment to scale the difference between attack and defense when comparing them to the categorical variables. So our variables `Stat Ratio` divides a Pokémon attack by their defense. From this ratio, we can more clearly see any values larger than one will yield a high attack type, values less than one will show greater emphasis on defense, and finally values closer to one will be balanced. The summary below gives some insight as to the distribution of our new column:
+
+```{r summary_stat_ratio, echo=FALSE,warning=FALSE,message=FALSE}
+statRatio <- allPokemonData$stats[1]/allPokemonData$stats[2]
+colnames(statRatio) <- c("Stat Ratio")
+knitr::kable(summary(statRatio))
+```
+
+## Adding it all up (Function)
+
+We have discussed our two catigorical and two quantitative variables (along with a new ratio column) in seperate parts but now the challenge comes in combining all the transformations and creations into a single data set. To perform this feat we created the following function:
+
+```{r all_variables, echo=TRUE,warning=FALSE,message=FALSE}
+combineAll <- function(sizeAndHeight, types, attack, defense){
+pokemonSizeTemp <- sizeAndHeight
+pokemonSizeTemp <- tibble(pokemonSizeTemp[[1]][,2],pokemonSizeTemp$height)
+colnames(pokemonSizeTemp) <- c("Size","Height")
+sizeAnalysis <- pokemonSizeTemp %>% transmute(
+                            "Size" = ifelse(Size == "Flying",ifelse(Height <= 0.41, "Small", ifelse(Height <= 1, "Medium","Large")), 
+                                            ifelse(Size == "Big", "Large", ifelse(Size == "Baby" | Size == "Shoulder", "Small","Medium"))))
+pokemonTypeTemp<- types
+primaryType <- c()
+secondaryType <- c()
+for(i in 1:length(pokemonTypeTemp)){
+  primaryType <- c(primaryType, pokemonTypeTemp[[i]][1,2])
+  secondaryType <- c(secondaryType, pokemonTypeTemp[[i]][2,2])
+}
+attackTemp <- attack
+defenseTemp <- defense
+pokemonAnalysis <- tibble(primaryType,secondaryType,sizeAnalysis,attackTemp,defenseTemp,(attackTemp/defenseTemp))
+colnames(pokemonAnalysis) <- c("Primary Type","Secondary Type","Size","Base Attack","Base Defense", "Stat Ratio")
+return (pokemonAnalysis)
+}
+pokemonData <- combineAll(allPokemonData %>% select(buddySize, height), allPokemonData$types, allPokemonData$stats[1], allPokemonData$stats[2])
+```
+
+Finally we can see a sample of the function output:
+
+```{r preview_all_variables, echo=FALSE,warning=FALSE,message=FALSE}
+knitr::kable(head(pokemonData, n = 15),caption = "Preview of Pokémon Data")
+```
+
+# Just regular tables 
+
+Add graphs and charts when comparing the categorical and quantitative variables. 
+
+# Plots with some "pizzazz"
+
+Add graphs and charts when comparing the categorical and quantitative variables. 
+
+# To sum it all up!
+
+Finally summarize findings with plots and conclusion.
